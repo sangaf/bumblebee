@@ -1,0 +1,16 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: cspkafka-ingress
+spec:
+  rules:
+  - host: cspkafka.caas.lbgsandbox.com
+    http:
+      paths:
+      - backend:
+          serviceName: kafka-svc
+          servicePort: 9092
+  tls:
+  - hosts:
+    - cspkafka.caas.lbgsandbox.com
+    secretName: cspkafka-secret

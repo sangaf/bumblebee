@@ -1,0 +1,40 @@
+apiVersion: extensions/v1beta1 # for versions before 1.7.0 use apps/v1beta1
+kind: Deployment
+metadata:
+  name: csppush
+  namespace: poc0154-dev-ns
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: csppush
+  template:
+    metadata:
+      labels:
+        app: csppush
+    spec:
+      containers:
+      - name: csppush
+        image: caas.lbgsandbox.com:8500/poc0154-dev-ns/csppush:0.0.13
+        resources:
+          limits:
+            memory: 500Mi
+            cpu: 1
+          requests:
+            memory: 300Mi
+            cpu: 1
+        ports:
+        - containerPort: 9000
+        env:
+        - name: COUNTRY_OF_ASSOCIATION_TOPIC_ENABLED
+          value: "true"
+        - name: ELECTRONIC_ADDRESS_TOPICS_ENABLED
+          value: "true"
+        - name: POSTAL_ADDRESS_TOPIC_ENABLED
+          value: "true"
+        - name: INDIVIDUAL_TOPIC_ENABLED
+          value: "true"
+        - name: TELEPHONE_DETAILS_TOPICS_ENABLED
+          value: "true"
+        - name: SPRING_PROFILES_ACTIVE
+          value: "sandbox"

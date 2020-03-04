@@ -1,0 +1,27 @@
+apiVersion: extensions/v1beta1 # for versions before 1.7.0 use apps/v1beta1
+kind: Deployment
+metadata:
+  name: csppush
+  namespace: poc0154-dev-ns
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: csppush
+  template:
+    metadata:
+      labels:
+        app: csppush
+    spec:
+      containers:
+      - name: csppush
+        image: ${REPONAME}/csppush:${TAGVERSION}
+        resources:
+          limits:
+            memory: "500Mi"
+            cpu: "1"
+          requests:
+            memory: "300Mi"
+            cpu: "1"
+        ports:
+        - containerPort: 9000

@@ -1,0 +1,52 @@
+apiVersion: extensions/v1beta1 # for versions before 1.7.0 use apps/v1beta1
+kind: Deployment
+metadata:
+  name: kafka-broker
+  namespace: poc0154-dev-ns
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka-broker
+  template:
+    metadata:
+      labels:
+        app: kafka-broker
+    spec:
+      containers:
+      - name: kafka-broker
+        image: caas.lbgsandbox.com:8500/poc0154-dev-ns/kafka-broker:1.0.0
+        resources:
+          limits:
+            memory: "500Mi"
+            cpu: "1"
+          requests:
+            memory: "300Mi"
+            cpu: "1"
+        ports:
+        - containerPort: 9092
+        env:
+        - name: KAFKA_ZOOKEEPER_CONNECT
+          value: "localhost:2181"
+        - name: KAFKA_ADVERTISED_LISTENERS
+          value: "INTBROKER://localhost:9091, CONSUMERS://kafka-svc:9092"
+        - name: KAFKA_LISTENERS
+          value: "INTBROKER://localhost:9091, CONSUMERS://0.0.0.0:9092"
+        - name: KAFKA_LISTENER_SECURITY_PROTOCOL_MAP
+          value: "INTBROKER:PLAINTEXT, CONSUMERS:PLAINTEXT"
+        - name: KAFKA_INTER_BROKER_LISTENER_NAME
+          value: "INTBROKER" 
+        - name: KAFKA_CREATE_TOPICS
+          value: "individual:1:1,postal-address:1:1,telephone:1:1,electronic-address:1:1,country-of-association:1:1,consent-preferences:1:1"
+      - name: zookeeper
+        image: caas.lbgsandbox.com:8500/poc0154-dev-ns/zookeeper:1.0.0
+        resources:
+          limits:
+            memory: "500Mi"
+            cpu: "1"
+          requests:
+            memory: "300Mi"
+            cpu: "1"
+        ports:
+        - containerPort: 2181
+        

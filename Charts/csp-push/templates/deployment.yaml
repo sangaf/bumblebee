@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: csppush-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: csp-push
+  template:
+    metadata:
+      labels:
+        app: csp-push
+    spec:
+      containers:
+        - name: csp-push
+          image: {{ .Values.repository }}/{{ .Values.image.name }}:{{ .Values.image.tag }}
+          env:
+          - name: COUNTRY_OF_ASSOCIATION_TOPIC_ENABLED
+            value: "true"
+          - name: ELECTRONIC_ADDRESS_TOPICS_ENABLED
+            value: "true"
+          - name: POSTAL_ADDRESS_TOPIC_ENABLED
+            value: "true"
+          - name: INDIVIDUAL_TOPIC_ENABLED
+            value: "true"
+          - name: TELEPHONE_DETAILS_TOPICS_ENABLED
+            value: "true"
+          - name: SPRING_PROFILES_ACTIVE
+            value: {{ .Values.environment }}
+          resources:
+            limits:
+              memory: 500Mi
+              cpu: 1
+            requests:
+              memory: 300Mi
+              cpu: 1 
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: csp-push-svc
+spec:
+  type: ClusterIP
+  selector:
+    app: csp-push
+  ports:
+  - port: 9000
+    targetPort: 9000
